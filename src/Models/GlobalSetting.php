@@ -106,7 +106,7 @@ class GlobalSetting extends Model
                 Rule::unique(self::databaseConnection() . '.' . self::tableName(), self::tableKeyColumn())->ignore($ignore_key, 'key'),
             ],
             self::tableValueColumn() => [
-                'required',
+                'nullable',
                 'string',
             ],
             self::tableTypeColumn() => [
