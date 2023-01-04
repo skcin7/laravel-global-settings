@@ -1,4 +1,3 @@
-
 @if(Session::has('flash_message'))
     <div class="flash_message flash_message_{{ Session::get('flash_message')['type'] }}">
         {!! isset(Session::get('flash_message')['message']) ? Session::get('flash_message')['message'] : '' !!}

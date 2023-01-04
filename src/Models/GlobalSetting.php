@@ -90,9 +90,11 @@ class GlobalSetting extends Model
 
     /**
      * Validation rules which all valid global settings must pass to be stored in the database.
+     *
+     * @param mixed $ignore_key = null
      * @return string[][]
      */
-    public static function validationRules(): array
+    public static function validationRules(mixed $ignore_key = null): array
     {
         return [
             self::tableKeyColumn() => [
@@ -101,7 +103,7 @@ class GlobalSetting extends Model
                 'min:1',
                 'max:255',
 //                'unique:' . self::databaseConnection() . '.' . self::tableName() . ',' . self::tableKeyColumn(),
-                Rule::unique(self::databaseConnection() . '.' . self::tableName(), self::tableKeyColumn()),
+                Rule::unique(self::databaseConnection() . '.' . self::tableName(), self::tableKeyColumn())->ignore($ignore_key, 'key'),
             ],
             self::tableValueColumn() => [
                 'required',
@@ -179,7 +181,14 @@ class GlobalSetting extends Model
     ];
 
     /**
-     * Get all of the global settings.
+     * Not using Eloquent timestamps.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * Get all global settings.
      * @return Collection
      */
     public static function getGlobalSettings(): Collection

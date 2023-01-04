@@ -1,140 +1,230 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('global_settings::layout')
 
-    <!-- Page Title: -->
-    <title>Global Settings</title>
+@section('pageContent')
+    <fieldset class="fieldset mb-5">
+        <legend>New Global Setting</legend>
+        @include('global_settings::_global_setting', ['global_setting' => $new_global_setting])
+    </fieldset>
 
-    <!-- Fonts: -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+    <fieldset class="fieldset mb-5">
+        <legend>Existing Global Settings</legend>
 
-    <!-- Styles: -->
-{{--    <link href="{{ mix('css/app.css') }}" rel="stylesheet">--}}
-{{--    <link href="{{ asset('css/global_settings.css') }}" rel="stylesheet">--}}
+        @if($existing_global_settings->count() > 0)
+            <ul class="list-unstyled mb-0" id="existing_global_settings_list">
+                @foreach($existing_global_settings as $existing_global_setting)
+                    <li>
+                        @include('global_settings::_global_setting', ['global_setting' => $existing_global_setting])
+                    </li>
+                @endforeach
+            </ul>
+        @else
+            <div class="alert alert-warning">No Existing Global Settings. Add one above.</div>
+        @endif
+    </fieldset>
+@endsection
 
-    <style>
-        html, html > body {
-            box-sizing: border-box;
-            color: #000;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 1.0rem;
-            line-height: 1.6;
-            min-height: 100vh;
-            margin: 0rem;
-            padding: 0rem;
-            scroll-behavior: auto !important;
-        }
-        body {
-            background-color: #FFF;
-{{--            background-image: url("{{ asset('images/linktree/BackgroundDots_4x4.gif') }}");--}}
-            background-image: url("data:image/gif;base64,R0lGODlhBAAEAIAAAP///87KxSH/C05FVFNDQVBFMi4wAwEAAAAh+QQEAAAAACwAAAAABAAEAAACBAyOqQUAOw==");
-            margin: 0rem !important;
-            padding: 0.5rem !important;
-        }
-        #global_settings_fieldset {
-            background-color: #FFF;
-            border: 2px solid #495057;
-            box-shadow: 4px 4px 0 #869099;
-            padding: 0rem;
-        }
-        #global_settings_fieldset legend {
-            background-color: #FFF;
-            font-size: 120% !important;
-            border: 2px solid #495057;
-            border-bottom: none;
-            color: #000;
-            display: flex;
-            flex-direction: row;
-            float: none !important;
-            font-size: 15px;
-            line-height: 1;
-            margin: 0;
-            margin-bottom: 0px;
-            margin-bottom: 0;
-            padding: 0.5rem;
-            text-align: center;
-            text-shadow: 0px 2px 2px #fff;
-            width: auto;
-        }
-        #global_settings_fieldset form {
-            display: flex;
-            flex-direction: column;
-            padding: 0.5rem;
-        }
-        #global_settings_fieldset form textarea {
-            border: 1px solid #888;
-            border-radius: 0rem;
-            display: block;
-            line-height: 1.6;
-            margin-bottom: 0.5rem;
-            resize: vertical;
-        }
-        #global_settings_fieldset form textarea:active,
-        #global_settings_fieldset form textarea:focus {
-            border-radius: 0rem !important;
-            outline: 2px solid #0066CC;
-        }
-        #global_settings_fieldset form button[type='submit'] {
-            /*--bs-btn-hover-border-color: #0a58ca;*/
-            /*--bs-btn-active-color: #fff;*/
-            /*--bs-btn-active-bg: #0a58ca;*/
-            /*--bs-btn-active-border-color: #0a53be;*/
-            /*--bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);*/
+@section('pageScripts')
+    <script type="text/javascript">
+        // console.log('Global Settings Scripts...')
 
-            display: inline-block;
-            padding: 0.375rem 0.75rem;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 400;
-            line-height: 1.6;
-            color: #FFF;
-            text-align: center;
-            text-decoration: none;
-            vertical-align: middle;
-            cursor: pointer;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            border: 1px solid #0d6efd;
-            border-radius: 0rem;
-            background-color: #0d6efd;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
-            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-            cursor: pointer;
-        }
-        #global_settings_fieldset form button[type='submit']:active,
-        #global_settings_fieldset form button[type='submit']:hover,
-        #global_settings_fieldset form button[type='submit']:focus {
-            background-color: #0b5ed7;
-            border-color: #0a58ca;
-            box-shadow: 0 0 0 0.25rem rgba(49, 132, 253, .5);
-            cursor: pointer;
-        }
+        $(document).on('change', 'select[name=type]', function(event) {
+            event.preventDefault();
 
-    </style>
-</head>
-    <body>
-        @include('global_settings::_flash')
+            let $type_input_element = $(this);
+            let $value_input_element = $(this).closest('form').find('[name=value]');
 
-        <fieldset id="global_settings_fieldset">
-            <legend>Global Settings</legend>
+            let type_value = String($(this).val());
 
-            <form action="{{ Route::has('web.mastermind.global_settings') ? route('web.mastermind.global_settings') : '#' }}" method="post">
-                @csrf
+            switch(type_value) {
+                case '':
+                default:
+                    $(this).closest('form').find('[name=value]').replaceWith(
+                        $("<input/>")
+                            .addClass('form-control disabled')
+                            .attr('autocapitalize', "off")
+                            .attr('autocomplete', "off")
+                            .attr('autocorrect', "off")
+                            .attr('spellcheck', "false")
+                            .attr('id', $value_input_element.attr('id'))
+                            .attr('name', 'value')
+                            .attr('placeholder', '[Specify Value...]')
+                            .prop('disabled', true)
+                    );
+                    break;
+                case 'array':
+                case 'json':
+                    $(this).closest('form').find('[name=value]').replaceWith(
+                        $("<textarea/>")
+                            .addClass('form-control')
+                            .attr('autocapitalize', "off")
+                            .attr('autocomplete', "off")
+                            .attr('autocorrect', "off")
+                            .attr('spellcheck', "false")
+                            .attr('id', $value_input_element.attr('id'))
+                            .attr('name', 'value')
+                            .attr('placeholder', '[Specify Value...]')
+                            .attr('rows', '2')
+                    );
+                    break;
+                case 'boolean':
+                    $(this).closest('form').find('[name=value]').replaceWith(
+                        $("<select/>")
+                            .addClass('form-control')
+                            .attr('id', $value_input_element.attr('id'))
+                            .attr('name', 'value')
+                            .append(
+                                $("<option/>")
+                                    .attr('value', "")
+                                    .text("[Specify Value...]")
+                            )
+                            .append(
+                                $("<option/>")
+                                    .attr('value', "true")
+                                    .text("True")
+                            )
+                            .append(
+                                $("<option/>")
+                                    .attr('value', "false")
+                                    .text("False")
+                            )
+                    );
+                    break;
+                case 'string':
+                    $(this).closest('form').find('[name=value]').replaceWith(
+                        $("<input/>")
+                            .addClass('form-control')
+                            .attr('autocapitalize', "off")
+                            .attr('autocomplete', "off")
+                            .attr('autocorrect', "off")
+                            .attr('spellcheck', "false")
+                            .attr('id', $value_input_element.attr('id'))
+                            .attr('name', 'value')
+                            .attr('placeholder', '[Specify Value...]')
+                    );
+                    break;
+            }
+        });
 
-                <textarea autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" class="@if(isset($errors) && count($errors) > 0) invalid @endif" id="global_settings_json_input" name="global_settings_json" placeholder="[Global Settings JSON...]" rows="10"></textarea>
 
-                <button type="submit">Save Global Settings</button>
-            </form>
+        $(document).on('submit', '.global_setting_form', async function(event) {
+            event.preventDefault();
+            console.log("Create or Update...");
 
-        </fieldset>
+            let $submitted_form_element = $(this);
+            let key_value = String($submitted_form_element.find('[name=key]').val());
+            let value_value = String($submitted_form_element.find('[name=value]').val());
+            let type_value = String($submitted_form_element.find('[name=type]').val());
 
-        <script type="text/javascript">
-            console.log('Global Settings Scripts...')
-        </script>
-    </body>
-</html>
+            // if(type_value == "boolean") {
+            //     value_value = Boolean(value_value);
+            // }
+
+
+            await axios({
+                "url": String($submitted_form_element.attr('action')),
+                "method": "post",
+                "data": {
+                    "_method": String($submitted_form_element.attr('method')),
+                    "_token": String($submitted_form_element.find('[name=_token]').val()),
+                    "key": key_value,
+                    "value": value_value,
+                    "type": type_value,
+                },
+            })
+                .then((response) => {
+                    console.log(response);
+                    console.log(response.data);
+                    console.log(response.data.status_code);
+                    console.log('Request Was Successful!');
+
+                    let success_message = "Success!";
+                    if(response.data.status_code == 201) {
+                        success_message = "Created Global Setting!";
+                        $submitted_form_element.find('[name=key]').val('');
+                        $submitted_form_element.find('[name=type]').val('');
+                        $submitted_form_element.find('[name=value]').val('');
+                    }
+                    else {
+                        success_message = "Updated Global Setting!";
+                    }
+
+                    $.notify(success_message, {
+                        "className": "success",
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                    console.log(error.response);
+                    console.log('Request Was Not Successful!');
+                })
+            ;
+        });
+
+        // $(document).on('change', 'input[name=key], select[name=type], [name=value]', function(event) {
+        //     event.preventDefault();
+        //     // console.log("Update...");
+        //     $(this).closest('.global_setting_form').trigger('submit');
+        // });
+
+        $(document).on('click', '[data-event-action=remove_global_setting]', async function(event) {
+            event.preventDefault();
+            console.log("Remove...");
+
+            let key = String($(this).attr('data-key'));
+            if(confirm("Really remove this Global Setting? (Key: " + key + ")")) {
+
+                let $submitted_form_element = $(this).closest('form');
+                let key_value = String($submitted_form_element.find('[name=key]').val());
+                let value_value = String($submitted_form_element.find('[name=value]').val());
+                let type_value = String($submitted_form_element.find('[name=type]').val());
+
+
+                await axios({
+                    "url": String($submitted_form_element.attr('action')),
+                    "method": "post",
+                    "data": {
+                        "_method": "delete",
+                        "_token": String($submitted_form_element.find('[name=_token]').val()),
+                        "key": key_value,
+                        "value": value_value,
+                        "type": type_value,
+                    },
+                })
+                    .then((response) => {
+                        console.log(response);
+                        console.log(response.data);
+                        console.log(response.data.status_code);
+                        console.log('Request Was Successful!');
+
+                        $(this).closest('li').fadeOut('fast', function() {
+                            $(this).remove();
+                        });
+
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        console.log(error.response);
+                        console.log('Request Was Not Successful!');
+                    })
+                ;
+
+            }
+        });
+
+
+        $.notify.defaults({
+            "autoHide": true,
+            "autoHideDelay": 5000,
+            "className": 'success',
+            "clickToHide": true,
+            "elementPosition": 'right bottom',
+            "globalPosition": 'right bottom',
+            "position": 'left bottom',
+            "showDuration": 200,
+            "style": 'bootstrap',
+        });
+
+
+        $('.autosize').autosize();
+    </script>
+@endsection
