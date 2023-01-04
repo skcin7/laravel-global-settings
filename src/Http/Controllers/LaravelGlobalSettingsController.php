@@ -85,9 +85,9 @@ class LaravelGlobalSettingsController extends Controller
      */
     private function createOrUpdateGlobalSetting(GlobalSettingModel $global_setting, string $key, string $value, string $type): GlobalSettingModel
     {
-        $global_setting->setAttribute(GlobalSettingModel::tableKeyColumn(), $key);
-        $global_setting->setAttribute(GlobalSettingModel::tableValueColumn(), $value);
-        $global_setting->setAttribute(GlobalSettingModel::tableTypeColumn(), $type);
+        $global_setting->setAttribute(GlobalSettingModel::tableKeyColumn(), (string) $key);
+        $global_setting->setAttribute(GlobalSettingModel::tableValueColumn(), (string) $value);
+        $global_setting->setAttribute(GlobalSettingModel::tableTypeColumn(), (string) $type);
         $global_setting->save();
 
         return $global_setting;
@@ -149,7 +149,7 @@ class LaravelGlobalSettingsController extends Controller
 //        $existing_global_setting_instance = GlobalSettingModel::where(GlobalSettingModel::tableKeyColumn(), $key)->firstOrFail();
         $existing_global_setting_instance = $this->getExistingGlobalSettingByKeyOrFail($key);
 //        $existing_global_setting_instance = $this->createOrUpdateFromRequest($request, $existing_global_setting_instance);
-        $new_global_setting_instance = $this->createOrUpdateGlobalSetting($existing_global_setting_instance, $request->input('key'), $request->input('value'), $request->input('type'));
+        $new_global_setting_instance = $this->createOrUpdateGlobalSetting($existing_global_setting_instance, (string) $request->input('key'), (string) $request->input('value'), (string) $request->input('type'));
 
         $success_message = 'The Global Setting has been successfully updated!';
 
