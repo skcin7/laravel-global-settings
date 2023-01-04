@@ -200,6 +200,41 @@ class GlobalSetting extends Model
         return $global_settings;
     }
 
+
+
+    /**
+     * Get the value attribute.
+     *
+     * @return mixed
+     */
+    public function getValueAttribute(): mixed
+    {
+        $global_setting_value = $this->getAttribute('value');
+
+        switch($this->getAttribute('type')) {
+            case 'array':
+                $global_setting_value = json_decode($global_setting_value, true);
+                break;
+            case 'boolean':
+                $global_setting_value = (bool) filter_var($global_setting_value, FILTER_VALIDATE_BOOL);
+                break;
+            case 'float':
+                $global_setting_value = (float) $global_setting_value;
+                break;
+            case 'integer':
+                $global_setting_value = (int) $global_setting_value;
+                break;
+            case 'json':
+                $global_setting_value = json_decode($global_setting_value);
+                break;
+            case 'string':
+                $global_setting_value = (string) $global_setting_value;
+                break;
+        }
+
+        return $global_setting_value;
+    }
+
     // public static function getGlobalSetting(string $global_setting_key)
     // {
     //     $global_setting = GlobalSetting::query()->where('key', $global_setting_key)->firstOrFail();
