@@ -59,7 +59,8 @@
                 @break
 
                 @case("string")
-                    <input autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" class="form-control font_family_monospace" id="{{ $global_setting->exists ? $global_setting->getAttribute('key') : 'NO_KEY' }}__global_setting_input__value" name="value" placeholder="[Specify Value...]" type="text" value="{{ old('value') ? old('value') : $global_setting->getAttribute('value') }}"/>
+{{--                    <input autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" class="form-control font_family_monospace" id="{{ $global_setting->exists ? $global_setting->getAttribute('key') : 'NO_KEY' }}__global_setting_input__value" name="value" placeholder="[Specify Value...]" type="text" value="{{ old('value') ? old('value') : $global_setting->getAttribute('value') }}"/>--}}
+                    <textarea autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" class="form-control font_family_monospace lh-1 autosize" id="{{ $global_setting->exists ? $global_setting->getAttribute('key') : 'NO_KEY' }}__global_setting_input__value" name="value" placeholder="[Specify Value...]">{{ old('value') ? old('value') : $global_setting->getAttribute('value') }}</textarea>
                 @break
 
                 @case("float")

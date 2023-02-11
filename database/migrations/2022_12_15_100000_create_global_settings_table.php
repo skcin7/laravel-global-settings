@@ -5,45 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Skcin7\LaravelGlobalSettings\Models\GlobalSetting;
 
-class CreateGlobalSettingsTable extends Migration
+return new class extends Migration
 {
-//    /**
-//     * The name of the database table.
-//     * @var string|mixed
-//     */
-//    private $table_name = 'global_settings';
-//
-//    /**
-//     * The name of the key column in the database table.
-//     * @var string|mixed
-//     */
-//    private $key_column = 'key';
-//
-//    /**
-//     * The name of the value column in the database table.
-//     * @var string|mixed
-//     */
-//    private $value_column = 'value';
-//
-//    /**
-//     * The name of the type column in the database table.
-//     * @var string|mixed
-//     */
-//    private $type_column = 'type';
-//
-//    /**
-//     * Create a new CreateGlobalSettingsTable instance.
-//     */
-//    public function __construct()
-//    {
-//        $this->table_name = GlobalSetting::tableName();
-//        $this->key_column = GlobalSetting::tableKeyColumn();
-//        $this->value_column = GlobalSetting::tableValueColumn();
-//        $this->type_column = GlobalSetting::tableTypeColumn();
-//    }
-
     /**
      * Run the migrations.
+     *
      * @return void
      */
     public function up()
@@ -59,6 +25,7 @@ class CreateGlobalSettingsTable extends Migration
 
     /**
      * Reverse the migrations.
+     *
      * @return void
      */
     public function down()
